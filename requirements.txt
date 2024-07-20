@@ -1,0 +1,4 @@
+pandas == 2.0.3
+openpyxl == 3.1.2
+openpyxl-image-loader == 1.0.5
+win32com.client
