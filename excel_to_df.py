@@ -6,27 +6,34 @@ from pathlib import Path
 import win32com.client
 from io import BytesIO
 from openpyxl_image_loader import SheetImageLoader
-
+ 
 load_dotenv()
 
 def convert_xls_to_xlsx(path):
     excel = win32com.client.Dispatch('Excel.Application')
-    wb = excel.Workbooks.Open(path)
-    wb.SaveAs(path[:-4] + ".xlsx", FileFormat=51)
-    wb.Close()
-    excel.Application.Quit()
+    excel.Visible = False
+    try:
+        wb = excel.Workbooks.Open(path)
+        xlsx_path = path[:-4] + ".xlsx"
+        wb.SaveAs(xlsx_path, FileFormat=51) # 51 is the file format for xlsx
+        wb.Close()
+    except Exception as e:
+        raise RuntimeError("An error occurred while converting the file.")
+    finally:
+        excel.Quit()
+    return xlsx_path
 
 def images_xlsx(sheet, header_row, img_col):
     loader = SheetImageLoader(sheet)
     images = []
     for row in sheet.iter_rows(min_row=header_row + 2, max_row=sheet.max_row, min_col=img_col + 1, max_col=img_col + 1):
         for cell in row:
-            if loader.image_in(cell.coordinate):
+            try:
                 image = loader.get(cell.coordinate)
                 img_byte_arr = BytesIO()
-                image.save(img_byte_arr, format='PNG')
+                image.save(img_byte_arr, format='png')
                 images.append(img_byte_arr.getvalue())
-            else:
+            except:
                 images.append(None)
     return images
 
@@ -49,28 +56,30 @@ def main(path):
                 break
         # Getting the sheet name and loading the sheet
         sheet_name = str(sheet).split(':')[1].replace('<', '').replace('>', '')
-        df = pd.read_excel(excel_obj, sheet_name, header=header_row)
-        
-        # Getting the image column
-        img_col = None
-        for idx, key in enumerate(df.keys()):
-            if 'image' in key.lower():
-                img_col = idx
-                col_name = key
-                break
+        if sheet_name != "Summary":
+            df = pd.read_excel(excel_obj, sheet_name, header=header_row)
 
-        xlsx_file = openpyxl.load_workbook(path)
-        img_sheet = xlsx_file[sheet_name]
+            # Getting the image column
+            img_cols, col_name = [], []
+            for idx, key in enumerate(df.keys()):
+                if 'image' in key.lower():
+                    img_cols.append(idx)
+                    col_name.append(key)
 
-        if img_col != None:
-            images = images_xlsx(img_sheet, header_row, img_col)
-            df[col_name] = images
-            
-        sheets.append(df)
+            xlsx_file = openpyxl.load_workbook(path)
+            img_sheet = xlsx_file[sheet_name]
+
+            # Adding the images to their respective columns
+            if col_name != None:
+                for img_col, col in zip(img_cols, col_name):
+                    images = images_xlsx(img_sheet, header_row, img_col)
+                    df[col] = images
+            sheets.append(df)
 
     return sheets
     
 if __name__ == "__main__":
     path = os.environ["FILE_PATH"]
     df = main(path)
-    print(df[1])
+    df[2].to_excel('multiple_images.xlsx')
+    print("File saved!")
