@@ -1,0 +1,47 @@
+Ping! You're successfully connected to MongoDB..
+---------------------------------------------
+brand = brand
+gst = gst
+hsn code = hsn code
+image = image
+model no = model number
+price/pc = price
+specification = specifications
+---------------------------------------------
+Do you want to insert this data? (y/n) y
+Data inserted successfully!
+---------------------------------------------
+brand = brand
+gst = gst
+hsn code = hsn code
+image = image
+price/pc = price
+specification = specifications
+---------------------------------------------
+Do you want to insert this data? (y/n) y
+Data inserted successfully!
+---------------------------------------------
+brand = brand
+gst = gst
+hsn code = hsn code
+image = image
+model no = model number
+price/pc = price
+specification = specifications
+---------------------------------------------
+Do you want to insert this data? (y/n) y
+Data inserted successfully!
+---------------------------------------------
+brand = brand
+gst = gst
+hsn code = hsn code
+image = image
+model = model number
+price/pc = price
+specification = specifications
+---------------------------------------------
+Do you want to insert this data? (y/n) y
+Data inserted successfully!
+All sheets completed.
+
+Process finished with exit code 0

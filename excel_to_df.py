@@ -1,4 +1,4 @@
-import os
+# import os
 from dotenv import load_dotenv
 import pandas as pd
 import openpyxl
@@ -6,7 +6,7 @@ from pathlib import Path
 import win32com.client
 from io import BytesIO
 from openpyxl_image_loader import SheetImageLoader
- 
+
 load_dotenv()
 
 def convert_xls_to_xlsx(path):
@@ -37,7 +37,7 @@ def images_xlsx(sheet, header_row, img_col):
                 images.append(None)
     return images
 
-def main(path):
+def dfmaker(path):
     excel_obj = pd.ExcelFile(path)
     sheets = []
 
@@ -70,16 +70,16 @@ def main(path):
             img_sheet = xlsx_file[sheet_name]
 
             # Adding the images to their respective columns
-            if col_name != None:
+            if col_name is not None:
                 for img_col, col in zip(img_cols, col_name):
                     images = images_xlsx(img_sheet, header_row, img_col)
                     df[col] = images
             sheets.append(df)
-
     return sheets
     
-if __name__ == "__main__":
-    path = os.environ["FILE_PATH"]
-    df = main(path)
-    df[2].to_excel('multiple_images.xlsx')
-    print("File saved!")
+# if __name__ == "__main__":
+#     # path = os.environ["FILE_PATH"]
+#     path = "C:\StrangerCodes\AutoQuote\data\ROOM LIST  1 - WITH QUOTE.xls"
+#     df = dfmaker(path)
+#     print(df)
+    # df[2].to_excel('multiple_images.xlsx')
