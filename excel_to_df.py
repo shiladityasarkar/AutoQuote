@@ -1,4 +1,5 @@
-# import os
+import base64
+import os
 from dotenv import load_dotenv
 import pandas as pd
 import openpyxl
@@ -37,7 +38,7 @@ def images_xlsx(sheet, header_row, img_col):
                 images.append(None)
     return images
 
-def dfmaker(path):
+def df_maker(path):
     excel_obj = pd.ExcelFile(path)
     sheets = []
 
@@ -51,7 +52,8 @@ def dfmaker(path):
     for sheet in excel_obj.book:
         # Getting the index of header row
         for idx, row in enumerate(sheet):
-            if 'qty' in ''.join([str(row_str) for row_str in row]).lower():
+            header_cols = ['qty', 'price']
+            if any([val in ''.join([str(row_str) for row_str in row]).lower() for val in header_cols]):
                 header_row = idx
                 break
         # Getting the sheet name and loading the sheet
@@ -73,13 +75,12 @@ def dfmaker(path):
             if col_name is not None:
                 for img_col, col in zip(img_cols, col_name):
                     images = images_xlsx(img_sheet, header_row, img_col)
-                    df[col] = images
+                    df[col] = list(map(lambda x: str(base64.b64decode(x)), images))
             sheets.append(df)
     return sheets
     
 # if __name__ == "__main__":
-#     # path = os.environ["FILE_PATH"]
-#     path = "C:\StrangerCodes\AutoQuote\data\ROOM LIST  1 - WITH QUOTE.xls"
-#     df = dfmaker(path)
-#     print(df)
-    # df[2].to_excel('multiple_images.xlsx')
+#     path = r"S:\AutoQuote\data\WALTHR PRICE LIST.xls"
+#     df = df_maker(path)
+#     df[0].to_excel('multiple_images.xlsx')
+#     print("File saved!")
