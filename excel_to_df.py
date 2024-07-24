@@ -37,7 +37,7 @@ def images_xlsx(sheet, header_row, img_col):
                 images.append(None)
     return images
 
-def df_maker(path):
+def dfmaker(path):
     excel_obj = pd.ExcelFile(path)
     sheets = []
 
