@@ -73,7 +73,7 @@ def df_maker(path):
             if col_name != None:
                 for img_col, col in zip(img_cols, col_name):
                     images = images_xlsx(img_sheet, header_row, img_col)
-                    df[col] = list(map(lambda x: str(x), images))
+                    df[col] = images#list(map(lambda x: x.decode(), images))
             sheets.append(df)
 
     return sheets
