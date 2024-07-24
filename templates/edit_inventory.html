@@ -1,0 +1,206 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Edit Product</title>
+  <style >
+    /* Style the body */
+body {
+  background-color:#bae5d8;
+  font-family: Arial, sans-serif;
+  margin: 20;
+  padding: 30;
+  align-items: center;
+  height: 100vh; /* Center content vertically in the viewport */
+}
+
+/* Style the headings (h4) */
+h4 {
+  color: #333; /* Text color for h4 */
+  font-size: 1em; /* Adjust the font size as needed */
+  text-align: center; /* Center-align the text */
+  margin: 20px 0; /* Add margin for spacing */
+  text-transform: uppercase;
+}
+
+/* Style the table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #000; /* Black border for the table */
+  font-family: Arial, sans-serif;
+  margin: 20px 0;
+}
+th {
+  background-color: #333; /* Dark background color for table headers */
+  color: #fff; /* White text color for table headers */
+  padding: 10px;
+  text-align: center;
+}
+th:hover {
+  background-color: #555; /* Darker background color on hover */
+}
+/* Style the table rows (tr) */
+tr {
+  background-color: #fff;
+  border-bottom: 1px solid #ddd;
+}
+/* Style table rows alternately for better readability */
+tr:nth-child(even) {
+  background-color: #f2f2f2; /* Light gray for even rows */
+}
+/* Style the table cells (td) */
+td {
+  padding: 10px;
+  text-align: center;
+  color: #000;
+}
+
+/* Style the button */
+button {
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+}
+
+/* Style for buttons on hover */
+button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Style the form */
+form {
+  margin: 20px 40px;
+}
+
+/* Style the div tag */
+div {
+  background-color: #ffffff;
+  margin: 20px;
+  padding: 30px;
+  border: 1px solid #000;
+}
+
+/* Style input and textarea */
+input, textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+  border: 1px solid #000;
+  border-radius: 5px;
+}
+
+/* Style select button */
+select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #000;
+  border-radius: 5px;
+}
+legend {
+  color: #333; /* Text color for the legend */
+  font-size: 1.2em; /* Adjust the font size as needed */
+  font-weight: bold; /* Make the text bold */
+  text-align: center; /* Center-align the text */
+  margin: 10px 0; /* Add margin for spacing */
+  position: relative; /* Set the position to relative */
+  z-index: 1; /* Increase the z-index to bring it to the front */
+}
+
+
+/* You can add more specific styles as needed */
+
+
+  </style>
+</head>
+<body>
+  <center>
+    
+
+    <div id="inventoryform">
+            <h2>Update Product Details</h2>
+
+<form>
+  <h4>Model No.: {{mybooks.model}}</h4>
+      <input id="model" type="text" name="model"  value="{{mybooks.model}}" style="display: none"><br>
+      <h4>Categrory</h4>
+      <input type="text" name="category"  value="{{mybooks.category}}"><br>
+    <h4>Brand</h4>
+      <input type="text" name="brand"  value="{{mybooks.brand}}"><br>
+    <h4>Name</h4>
+      <input type="text"  name="name"  value="{{mybooks.name}}"><br>
+    <h4>Specifications</h4>
+      <textarea name="specifications" rows="4" cols="50">{{mybooks.specifications}}</textarea><br><br>
+    <h4>Remarks</h4>
+      <textarea name="remarks" rows="4" cols="50">{{mybooks.remarks}}</textarea><br><br>
+    <h4>Price</h4>
+      <input type="number" name="price"   value="{{mybooks.price}}"><br>
+    <h4>Hotels</h4>
+      <input type="text" name="hotel"   value="{{mybooks.hotel}}"><br>
+    <br>
+    <h4>Image</h4>
+      <img src="data:image/jpeg;base64,{{ mybooks.image }}" alt="Product Image" style="max-width: 100px; max-height: 100px;"/><br>
+      <input type="file" id="myFile" name="filename">
+    <br>
+    <button id="submit1" onclick=confirmsave()>Update</button>
+    <textarea name="image" rows="4" cols="50" id="base64Data" hidden>{{mybooks.image}}</textarea>
+</form>
+</div>
+</center>
+</body>
+</html>
+<script>
+    document.getElementById('myFile').addEventListener('change', function() {
+        const fileInput = document.getElementById('myFile');
+        if (fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            reader.onloadend = function() {
+                const base64Image = reader.result.split(',')[1];
+                document.getElementById("base64Data").value = base64Image;
+            };
+            reader.readAsDataURL(file);
+        } else {
+            alert("Please select a file.");
+        }
+    });
+</script>
+<script type="text/javascript">
+  $('#submit1').click(function(){
+    var form=$("#inventoryform form");
+    form=form.serializeArray();
+    var modelName = $("#model").val();
+    $.ajax({
+                        type: "POST",
+                        url: "http://localhost:5001/edit_inventory/" + modelName,
+                        data: form,
+                        xhrFields: {
+                  withCredentials: true
+              },
+              crossDomain: true,
+                        success: function(msg) {
+                            return false;
+                        },
+
+                        error: function(xhr) {
+                            window.scrollTo(0, 0);
+                            return false;
+                        },
+
+                
+                    });
+                    return false;
+
+  });
+
+   function confirmsave(){
+    var isconfirm = window.confirm("Do you want to save changes?");
+    if(isconfirm)
+        window.close();
+   }
+</script>
