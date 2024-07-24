@@ -1,3 +1,4 @@
+import base64
 from dotenv import load_dotenv
 import pandas as pd
 import openpyxl
@@ -31,7 +32,7 @@ def images_xlsx(sheet, header_row, img_col):
                 image = loader.get(cell.coordinate)
                 img_byte_arr = BytesIO()
                 image.save(img_byte_arr, format='png')
-                images.append(img_byte_arr.getvalue())
+                images.append(base64.b64encode(img_byte_arr.getvalue()))
             except:
                 images.append(None)
     return images
