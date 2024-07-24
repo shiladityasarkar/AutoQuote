@@ -126,71 +126,14 @@ legend {
 		<h2>Enter Product Details</h2>
 
 <form >
-  <input type="text" class="input" name="category" placeholder="Enter Category"><br><br> 
-  <input type="text" class="input" name="brand" placeholder="Enter Brand name"><br><br>  
-  <input type="text" class="input" name="product" placeholder="Enter Product Name"><br><br> 
-  <input type="text" class="input" name="model" placeholder="Enter Model Number"><br><br> 
-  <textarea name="specifications" rows="4" cols="50" placeholder="Enter Specifications"></textarea><br><br>
-  <textarea name="remarks" rows="4" cols="50" placeholder="Enter Remarks"></textarea><br><br>
-	<input type="number" class="input" name="price" placeholder="Enter Price"><br><br>
-  <input type="number" class="input" name="HSN" placeholder="Enter HSN Code"><br><br>
-  <input type="number" class="input" name="GST" placeholder="Enter GST %"><br><br>
-  <input type="text" class="input" name="hotel" placeholder="Enter Hotel Preference"><br><br> 
   <input type="file" id="myFile" name="filename"> <br><br>
+  HSN: 
+  <input type="radio" name="hsn" value="hsnyes"> YES  <input type="radio" name="hsn" value="hsnno"> NO <br><br>
+  GST: 
+  <input type="radio" name="gst" value="gstyes"> YES  <input type="radio" name="gst" value="gstno"> NO <br><br>
 	<button id="submit1" class="button" onclick=confirmsave()>Save</button>
-  <textarea name="image" rows="4" cols="50" id="base64Data" hidden></textarea><br><br>
 </form>
 </div>
 </center>
 </body>
 </html>
-<script>
-    document.getElementById('myFile').addEventListener('change', function() {
-        const fileInput = document.getElementById('myFile');
-        if (fileInput.files.length > 0) {
-            const file = fileInput.files[0];
-            const reader = new FileReader();
-            reader.onloadend = function() {
-                const base64Image = reader.result.split(',')[1];
-                document.getElementById("base64Data").value = base64Image;
-            };
-            reader.readAsDataURL(file);
-        } else {
-            alert("Please select a file.");
-        }
-    });
-</script>
-
-<script type="text/javascript">
-	$('#submit1').click(function(){
-		var form=$("#inventoryform form");
-		form=form.serializeArray();
-		$.ajax({
-                        type: "POST",
-                        url: "http://localhost:5001/add_inventory",
-                        data: form,
-                        xhrFields: {
-       						withCredentials: true
-    					},
-    					crossDomain: true,
-                        success: function(msg) {
-                            return false;
-                        },
-
-                        error: function(xhr) {
-                            window.scrollTo(0, 0);
-                            return false;
-                        },
-
-                
-                    });
-                    return false;
-
-	});
-
-   function confirmsave(){
-   	var isconfirm = window.confirm("Do you want to save it?");
-    if(isconfirm)
-        window.close();
-   }
-</script>

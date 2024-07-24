@@ -127,6 +127,8 @@ legend {
       <th>Specifications</th>
       <th>Remarks</th>
       <th>Price</th>
+      <th>HSN Code</th>
+      <th>GST %</th>
       <th>Hotel</th>
       <th>Image</th>
     </tr>
@@ -135,10 +137,12 @@ legend {
         <td><a href="http://localhost:5001/edit_inventory/{{ book.model}}">{{ book.model }}</td>
         <td>{{ book.category }}</td>
         <td>{{ book.brand }}</td>
-        <td>{{ book.name }}</td>
+        <td>{{ book.product }}</td>
         <td>{{ book.specifications }}</td>
         <td>{{ book.remarks }}</td>
         <td>{{ book.price }}</td>
+        <td>{{ book.HSN}}</td>
+        <td>{{ book.GST}}</td>
         <td>{{ book.hotel }}</td>
         <td>
           <img src="data:image/jpeg;base64,{{ book.image }}" alt="Product Image" style="max-width: 100px; max-height: 100px;"/>
