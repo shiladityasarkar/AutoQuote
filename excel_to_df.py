@@ -38,7 +38,7 @@ def images_xlsx(sheet, header_row, img_col):
                 images.append(None)
     return images
 
-def main(path):
+def df_maker(path):
     excel_obj = pd.ExcelFile(path)
     sheets = []
 
@@ -82,6 +82,6 @@ def main(path):
     
 if __name__ == "__main__":
     path = r"S:\AutoQuote\data\WALTHR PRICE LIST.xls"
-    df = main(path)
+    df = df_maker(path)
     df[0].to_excel('multiple_images.xlsx')
     print("File saved!")
