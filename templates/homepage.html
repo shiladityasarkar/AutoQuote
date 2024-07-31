@@ -1,28 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Homepage</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoQuote</title>
     <link rel="stylesheet" href="/static/css/style.css">
+	<script src="/static/js/script.js"></script>
 </head>
 <body>
     <header>
-        <h2>AutoQuote</h2>
-        <nav>
-            <a href="">About us</a>
-			<a href="">Report an Issue</a>
-			<a href="">Contact us</a>
-        </nav>
+        <div class="container">
+            <nav>
+                <ul>
+                    <li>
+                        <div class="logo">
+                            <a href="/"><img src="/static/images/logo.png" alt="AutoQuote"></a>
+                         </div>
+                     </li>
+                    <li><a href="/add_inventory">Add Products</a></li>
+                    <li><a href="/view_inventory">View Products</a></li>
+                </ul>
+            </nav>
+        </div>
     </header>
     <main>
-        <div id="cashbook">
-            <button id="add" onclick="window.location.href = '/add_inventory';">Add Product</button>
-            <button id="view" onclick="window.location.href = '/view_inventory';">View Products</button>
+        <center>
+          <div class="hero">
+			<h3>Generate Quotation!</h3>
+			<input type="file" id="fileInput"><br><br>
+			With GST: 
+			<input type="radio" name="gst" value="yes" id="gstYes">Yes 
+			<input type="radio" name="gst" value="no" id="gstNo">No<br><br>
+			With HSN: 
+			<input type="radio" name="hsn" value="yes" id="hsnYes">Yes 
+			<input type="radio" name="hsn" value="no" id="hsnNo">No<br><br>
+			<button class="btn" id="generateButton">Generate</button>
         </div>
+        </center>
     </main>
     <footer>
-        <p>&copy; 2024 AutoQuote. All rights reserved.</p>
+        <div>
+            <p>&copy; 2024 AutoQuote. All rights reserved.</p>
+        </div>
     </footer>
 </body>
 </html>

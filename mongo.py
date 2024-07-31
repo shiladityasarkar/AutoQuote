@@ -30,9 +30,9 @@ targets = ['category', 'brand', 'product', 'model', 'specifications', 'GST', 'HS
 # tar_embeds = model.encode(targets, convert_to_tensor=True)
 # np.save('tar_embeds.npy', np.array(tar_embeds))
 
-tar_embeds = np.load('C:/StrangerCodes/AutoQuote/tar_embeds.npy')
+tar_embeds = np.load('tar_embeds.npy')
 
-sheets_with = ed.dfmaker('C:\StrangerCodes\AutoQuote\data\WALTHR PRICE LIST.xls')
+sheets_with, _ = ed.df_maker('data/WALTHR PRICE LIST.xls')
 # sheets_with = ed.dfmaker('C:\StrangerCodes\AutoQuote\data\ROOM LIST  1 - WITH QUOTE.xls')
 # sheets_without = ed.dfmaker('C:\StrangerCodes\AutoQuote\data\ROOM LIST  1 - WITHOUT QUOTE.xls')
 

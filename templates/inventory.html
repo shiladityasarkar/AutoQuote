@@ -7,188 +7,220 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Inventory</title>
 	<style >
-		/* Style the body */
-body {
-  background-color:#bae5d8;
-  font-family: Arial, sans-serif;
-  margin: 20;
-  padding: 30;
-  align-items: center;
-  height: 100vh; /* Center content vertically in the viewport */
-}
+    body {
+      background-color:#c2ae99;
+      font-family: Arial, sans-serif;
+      margin: 20;
+      padding: 30;
+      align-items: center;
+      height: 100vh;
+    }
 
-/* Style the headings (H2) */
-h2 {
-  color: #333; /* Text color for H2 */
-  font-size: 1.5em; /* Adjust the font size as needed */
-  text-align: center; /* Center-align the text */
-  margin: 20px 0; /* Add margin for spacing */
-  text-transform: uppercase;
-}
+    h2 {
+      color: #333;
+      font-size: 1.5em;
+      text-align: center;
+      margin: 20px 0;
+      text-transform: uppercase;
+    }
 
-/* Style the table */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  border: 1px solid #000; /* Black border for the table */
-  font-family: Arial, sans-serif;
-  margin: 20px 0;
-}
-th {
-  background-color: #333; /* Dark background color for table headers */
-  color: #fff; /* White text color for table headers */
-  padding: 10px;
-  text-align: center;
-}
-th:hover {
-  background-color: #555; /* Darker background color on hover */
-}
-/* Style the table rows (tr) */
-tr {
-  background-color: #fff;
-  border-bottom: 1px solid #ddd;
-}
-/* Style table rows alternately for better readability */
-tr:nth-child(even) {
-  background-color: #f2f2f2; /* Light gray for even rows */
-}
-/* Style the table cells (td) */
-td {
-  padding: 10px;
-  text-align: center;
-  color: #000;
-}
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1px solid #000; 
+      font-family: Arial, sans-serif;
+      margin: 20px 0;
+    }
+    th {
+      background-color: #333;
+      color: #fff;
+      padding: 10px;
+      text-align: center;
+    }
+    th:hover {
+      background-color: #555;
+    }
 
-/* Style the button */
-button {
-  background-color: #007bff;
-  color: #fff;
-  padding: 10px 20px;
-  border: none;
-  cursor: pointer;
-}
+    tr {
+      background-color: #fff;
+      border-bottom: 1px solid #ddd;
+    }
 
-/* Style for buttons on hover */
-button:hover {
-  background-color: #0056b3; /* Darker blue on hover */
-}
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
 
-/* Style the form */
-form {
-  margin: 20px 40px;
-}
+    td {
+      padding: 10px;
+      text-align: center;
+      color: #000;
+    }
 
-/* Style the div tag */
-div {
-  background-color: #ffffff;
-  margin: 20px;
-  padding: 30px;
-  border: 1px solid #000;
-}
+    button {
+      background-color: #0B022D;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+    }
 
-/* Style input and textarea */
-input, textarea {
-  width: 100%;
-  padding: 10px;
-  margin: 5px 0;
-  border: 1px solid #000;
-  border-radius: 5px;
-}
+    button:hover {
+      background-color: #c2ae99;
+      color: #000;
+    }
 
-/* Style select button */
-select {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #000;
-  border-radius: 5px;
-}
-legend {
-  color: #333; /* Text color for the legend */
-  font-size: 1.2em; /* Adjust the font size as needed */
-  font-weight: bold; /* Make the text bold */
-  text-align: center; /* Center-align the text */
-  margin: 10px 0; /* Add margin for spacing */
-  position: relative; /* Set the position to relative */
-  z-index: 1; /* Increase the z-index to bring it to the front */
-}
+    form {
+      margin: 20px 40px;
+    }
 
+    #inventoryform {
+      background-color: #ffffff;
+      margin: 20px;
+      padding: 30px;
+      border: 1px solid #000;
+    }
 
-/* You can add more specific styles as needed */
+    /* Style input and textarea */
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0;
+      border: 1px solid #000;
+      border-radius: 5px;
+    }
 
+    /* Style select button */
+    select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #000;
+      border-radius: 5px;
+    }
+    legend {
+      color: #333; /* Text color for the legend */
+      font-size: 1.2em; /* Adjust the font size as needed */
+      font-weight: bold; /* Make the text bold */
+      text-align: center; /* Center-align the text */
+      margin: 10px 0; /* Add margin for spacing */
+      position: relative; /* Set the position to relative */
+      z-index: 1; /* Increase the z-index to bring it to the front */
+    }
+    header {
+        
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .logo img {
+        height: 50px;
+    }
 
-	</style>
+    nav ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+    }
+
+    nav li {
+        margin-right: 20px;
+        align-self: center;
+    }
+
+    nav a {
+        text-decoration: none;
+        background-color:#c2ae99;
+        color: #ffffff;
+        font-weight: bold;
+        transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+        color: #0B022D;
+    }
+    .container {
+        max-width: auto;
+        background-color:#c2ae99;    
+        display: flex;
+        align-items: center;
+    }
+
+    .containers{
+        background-color: transparent;
+    }
+  </style>
 </head>
-<body>
-	<center>
-		
+  <body>
+    <header>
+      <div class="container">
+          <nav>
+              <ul>
+                  <li>
+                      <div class="logo">
+                          <a href="/"><img src="/static/images/logo.png" alt="AutoQuote"></a>
+                       </div>
+                   </li>
+                  <li><a href="/add_inventory">Add Products</a></li>
+                  <li><a href="/view_inventory">View Products</a></li>
+              </ul>
+          </nav>
+      </div>
+    </header>
+    <center>
+        <div id="inventoryform">
+            <h2>Enter Product Details</h2>
+            <form id="productForm">
+                <input type="text" class="input" name="category" placeholder="Enter Category"><br><br>
+                <input type="text" class="input" name="brand" placeholder="Enter Brand name"><br><br>
+                <input type="text" class="input" name="name" placeholder="Enter Product Name"><br><br>
+                <input type="text" class="input" name="model" placeholder="Enter Model Number"><br><br>
+                <textarea name="specifications" rows="4" cols="50" placeholder="Enter Specifications"></textarea><br><br>
+                <textarea name="remarks" rows="4" cols="50" placeholder="Enter Remarks"></textarea><br><br>
+                <input type="number" class="input" name="price" placeholder="Enter Price"><br><br>
+                <input type="text" class="input" name="hotel" placeholder="Enter Hotel Preference"><br><br>
+                <input type="file" id="myFile" name="filename"><br><br>
+                <textarea name="image" rows="4" cols="50" id="base64Data" hidden></textarea><br><br>
+                <button type="button" id="submit1" class="button">Save</button>
+            </form>
+        </div>
+    </center>
 
-		<div id="inventoryform">
-		<h2>Enter Product Details</h2>
+    <script>
+        document.getElementById('myFile').addEventListener('change', function() {
+            const fileInput = document.getElementById('myFile');
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                const reader = new FileReader();
+                reader.onloadend = function() {
+                    const base64Image = reader.result.split(',')[1];
+                    document.getElementById("base64Data").value = base64Image;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                alert("Please select a file.");
+            }
+        });
 
-<form >
-  <input type="text" class="input" name="category" placeholder="Enter Category"><br><br> 
-  <input type="text" class="input" name="brand" placeholder="Enter Brand name"><br><br>  
-  <input type="text" class="input" name="name" placeholder="Enter Product Name"><br><br> 
-  <input type="text" class="input" name="model" placeholder="Enter Model Number"><br><br> 
-  <textarea name="specifications" rows="4" cols="50" placeholder="Enter Specifications"></textarea><br><br>
-  <textarea name="remarks" rows="4" cols="50" placeholder="Enter Remarks"></textarea><br><br>
-	<input type="number" class="input" name="price" placeholder="Enter Price"><br><br>
-  <input type="text" class="input" name="hotel" placeholder="Enter Hotel Preference"><br><br> 
-  <input type="file" id="myFile" name="filename"> <br><br>
-	<button id="submit1" class="button" onclick=confirmsave()>Save</button>
-  <textarea name="image" rows="4" cols="50" id="base64Data" hidden></textarea><br><br>
-</form>
-</div>
-</center>
-</body>
+        document.getElementById('submit1').addEventListener('click', function() {
+            const isConfirm = window.confirm("Do you want to save it?");
+            if (isConfirm) {
+                const form = $("#productForm").serializeArray();
+                $.ajax({
+                    type: "POST",
+                    url: "/",
+                    data: form,
+                    xhrFields: {
+                        withCredentials: true
+                    },
+                    crossDomain: true,
+                    success: function(msg) {
+                        alert("Data saved successfully!");
+                        window.location.href = '/';
+                    },
+                    error: function(xhr) {
+                        alert("Error saving data.");
+                    }
+                });
+            }
+        });
+    </script>
+  </body>
 </html>
-<script>
-    document.getElementById('myFile').addEventListener('change', function() {
-        const fileInput = document.getElementById('myFile');
-        if (fileInput.files.length > 0) {
-            const file = fileInput.files[0];
-            const reader = new FileReader();
-            reader.onloadend = function() {
-                const base64Image = reader.result.split(',')[1];
-                document.getElementById("base64Data").value = base64Image;
-            };
-            reader.readAsDataURL(file);
-        } else {
-            alert("Please select a file.");
-        }
-    });
-</script>
-
-<script type="text/javascript">
-	$('#submit1').click(function(){
-		var form=$("#inventoryform form");
-		form=form.serializeArray();
-		$.ajax({
-                        type: "POST",
-                        url: "http://localhost:5001/add_inventory",
-                        data: form,
-                        xhrFields: {
-       						withCredentials: true
-    					},
-    					crossDomain: true,
-                        success: function(msg) {
-                            return false;
-                        },
-
-                        error: function(xhr) {
-                            window.scrollTo(0, 0);
-                            return false;
-                        },
-
-                
-                    });
-                    return false;
-
-	});
-
-   function confirmsave(){
-   	var isconfirm = window.confirm("Do you want to save it?");
-    if(isconfirm)
-        window.close();
-   }
-</script>
