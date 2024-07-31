@@ -39,7 +39,7 @@ def images_xlsx(sheet, header_row, img_col):
 
 def df_maker(path):
     excel_obj = pd.ExcelFile(path)
-    sheets = []
+    sheets, sheet_names = [], []
 
     # Checking if a .xlsx file already exists
     file_check = Path(path[:-4] + ".xlsx")
@@ -57,6 +57,7 @@ def df_maker(path):
                 break
         # Getting the sheet name and loading the sheet
         sheet_name = str(sheet).split(':')[1].replace('<', '').replace('>', '')
+        sheet_names.append(sheet_name)
         if sheet_name != "Summary":
             df = pd.read_excel(excel_obj, sheet_name, header=header_row)
 
@@ -74,13 +75,13 @@ def df_maker(path):
             if col_name != None:
                 for img_col, col in zip(img_cols, col_name):
                     images = images_xlsx(img_sheet, header_row, img_col)
-                    df[col] = list(map(lambda x: x.decode(), images))
+                    df[col] = list(map(lambda x: x.decode() if x is not None else None, images))
             sheets.append(df)
 
-    return sheets
+    return sheets, sheet_names
     
 if __name__ == "__main__":
-    path = r"S:\AutoQuote\data\WALTHR PRICE LIST.xls"
+    path = r"S:\AutoQuote\data\ROOM LIST  1 - WITHOUT QUOTE.xls"
     df = df_maker(path)
     df[0].to_excel('multiple_images.xlsx')
     print("File saved!")

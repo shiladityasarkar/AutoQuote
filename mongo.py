@@ -24,41 +24,46 @@ except Exception as e:
 
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
-targets = ['category', 'brand', 'product type', 'model number', 'specifications', 'gst', 'hsn code', 'remarks', 'price', 'hotel name', 'image']
+targets = ['category', 'brand', 'product', 'model', 'specifications', 'GST', 'HSN', 'remarks', 'price', 'hotel', 'image']
 
 # (only uncomment the code below if any changes are made in targets)
 # tar_embeds = model.encode(targets, convert_to_tensor=True)
 # np.save('tar_embeds.npy', np.array(tar_embeds))
 
-tar_embeds = np.load('C:/StrangerCodes/AutoQuote/tar_embeds.npy')
+tar_embeds = np.load('tar_embeds.npy')
 
-sheets_with = ed.dfmaker('C:\StrangerCodes\AutoQuote\data\ROOM LIST  1 - WITH QUOTE.xls')
-sheets_without = ed.dfmaker('C:\StrangerCodes\AutoQuote\data\ROOM LIST  1 - WITHOUT QUOTE.xlsy')
+sheets_with, _ = ed.df_maker('data/WALTHR PRICE LIST.xls')
+# sheets_with = ed.dfmaker('C:\StrangerCodes\AutoQuote\data\ROOM LIST  1 - WITH QUOTE.xls')
+# sheets_without = ed.dfmaker('C:\StrangerCodes\AutoQuote\data\ROOM LIST  1 - WITHOUT QUOTE.xls')
+
 c = -1
 
 while True:
     c += 1
     try:
-        wilist = list(sheets_with[c].columns.difference(sheets_without[c].columns)) # wishlist
+        # wilist = list(sheets_with[c].columns.difference(sheets_without[c].columns)) # wishlist
+        sheets_with[c].columns = [x.lower() for x in sheets_with[c].columns]
     except IndexError:
         print('All sheets completed.')
         break
-    sheets_with[c] = sheets_with[c][wilist]
-    sheets_with[c].columns = [x.lower() for x in sheets_with[c].columns]
 
-    try:
-        sheets_with[c].drop(['amount'], axis=1, inplace=True)
-    except KeyError:
-        pass
-    try:
-        sheets_with[c].drop(['gst value'], axis=1, inplace=True)
-    except KeyError:
-        pass
+    # sheets_with[c] = sheets_with[c][wilist]
+
+    # try:
+    #     sheets_with[c].drop(['amount'], axis=1, inplace=True)
+    # except KeyError:
+    #     pass
+    # try:
+    #     sheets_with[c].drop(['gst value'], axis=1, inplace=True)
+    # except KeyError:
+    #     pass
 
     sheets_with[c].dropna(how='all', inplace=True)
+    sheets_with[c].drop('sl no', axis=1, inplace=True)
 
     rec = sheets_with[c].columns # recieved
     cols = []
+
     print('---------------------------------------------')
     for i in range(len(rec)):
         rec_embed = model.encode(rec[i], convert_to_tensor=True)
@@ -71,12 +76,20 @@ while True:
 
     sheets_with[c].columns = cols
 
-    db = client['Inventory']
-    collection = db['MainInventory']
+    for i in list(set(targets).difference(cols)):
+        sheets_with[c][i] = 'NA'
+
+    inp = input('Which category is the sheet under? ')
+    sheets_with[c]['category'] = inp # change according to sheet.
+
+    print(sheets_with[c].head())
+
+    db = client['sampleInventory']
+    collection = db['inventory']
     dick = sheets_with[c].to_dict('records')
     ch = input('Do you want to insert this data? (y/n) ')
     if ch == 'y' or ch == 'Y':
         collection.insert_many(dick)
         print('Data inserted successfully!')
     else:
-        print('Data not inserted.n')
+        print('Data not inserted.')
