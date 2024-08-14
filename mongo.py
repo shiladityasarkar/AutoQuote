@@ -32,22 +32,18 @@ targets = ['category', 'brand', 'product', 'model', 'specifications', 'GST', 'HS
 
 tar_embeds = np.load('C:/StrangerCodes/AutoQuote/tar_embeds.npy')
 
-sheets_with = ed.dfmaker('C:\StrangerCodes\AutoQuote\data\WALTHR PRICE LIST.xls')
-# sheets_with = ed.dfmaker('C:\StrangerCodes\AutoQuote\data\ROOM LIST  1 - WITH QUOTE.xls')
-# sheets_without = ed.dfmaker('C:\StrangerCodes\AutoQuote\data\ROOM LIST  1 - WITHOUT QUOTE.xls')
+sheets, names = ed.dfmaker('C:\StrangerCodes\AutoQuote\data\Quoted BOQ.xls')
 
 c = -1
 
 while True:
     c += 1
     try:
-        # wilist = list(sheets_with[c].columns.difference(sheets_without[c].columns)) # wishlist
-        sheets_with[c].columns = [x.lower() for x in sheets_with[c].columns]
+        sheets[c].columns = [x.lower() for x in sheets[c].columns]
     except IndexError:
         print('All sheets completed.')
         break
 
-    # sheets_with[c] = sheets_with[c][wilist]
 
     # try:
     #     sheets_with[c].drop(['amount'], axis=1, inplace=True)
@@ -58,10 +54,10 @@ while True:
     # except KeyError:
     #     pass
 
-    sheets_with[c].dropna(how='all', inplace=True)
-    sheets_with[c].drop('sl no', axis=1, inplace=True)
+    sheets[c].dropna(how='all', inplace=True)
+    # sheets_with[c].drop('sl no', axis=1, inplace=True)
 
-    rec = sheets_with[c].columns # recieved
+    rec = sheets[c].columns # recieved
     cols = []
 
     print('---------------------------------------------')
@@ -74,19 +70,19 @@ while True:
         print(f'{rec[i]} = {top_sim_word}')
     print('---------------------------------------------')
 
-    sheets_with[c].columns = cols
+    sheets[c].columns = cols
 
     for i in list(set(targets).difference(cols)):
-        sheets_with[c][i] = 'NA'
+        sheets[c][i] = 'NA'
 
-    inp = input('Which category is the sheet under? ')
-    sheets_with[c]['category'] = inp # change according to sheet.
+    inp = input(f'Which category is the sheet {names[c]} under? ')
+    sheets[c]['category'] = inp # change according to sheet.
 
-    print(sheets_with[c].head())
+    print(sheets[c].head())
 
     db = client['sampleInventory']
     collection = db['inventory']
-    dick = sheets_with[c].to_dict('records')
+    dick = sheets[c].to_dict('records')
     ch = input('Do you want to insert this data? (y/n) ')
     if ch == 'y' or ch == 'Y':
         collection.insert_many(dick)

@@ -40,7 +40,7 @@ def images_xlsx(sheet, header_row, img_col):
 def dfmaker(path):
     excel_obj = pd.ExcelFile(path)
     sheets = []
-
+    names = []
     # Checking if a .xlsx file already exists
     file_check = Path(path[:-4] + ".xlsx")
     if not file_check.is_file():
@@ -51,15 +51,16 @@ def dfmaker(path):
     for sheet in excel_obj.book:
         # Getting the index of header row
         for idx, row in enumerate(sheet):
-            header_cols = ['qty', 'price']
+            header_cols = ['qty', 'price', 'quantity']
             if any([val in ''.join([str(row_str) for row_str in row]).lower() for val in header_cols]):
                 header_row = idx
                 break
         # Getting the sheet name and loading the sheet
         sheet_name = str(sheet).split(':')[1].replace('<', '').replace('>', '')
-        if sheet_name != "Summary":
+        print(sheet_name)
+        if sheet_name != "Summary" and sheet_name != "Export Summary":
             df = pd.read_excel(excel_obj, sheet_name, header=header_row)
-
+            names.append(sheet_name)
             # Getting the image column
             img_cols, col_name = [], []
             for idx, key in enumerate(df.keys()):
@@ -71,13 +72,13 @@ def dfmaker(path):
             img_sheet = xlsx_file[sheet_name]
 
             # Adding the images to their respective columns
-            if col_name != None:
+            if col_name is not None:
                 for img_col, col in zip(img_cols, col_name):
                     images = images_xlsx(img_sheet, header_row, img_col)
-                    df[col] = images#list(map(lambda x: x.decode(), images))
+                    df[col] = images #list(map(lambda x: x.decode(), images))
             sheets.append(df)
 
-    return sheets
+    return sheets, names
     
 if __name__ == "__main__":
     path = r"S:\AutoQuote\data\WALTHR PRICE LIST.xls"
