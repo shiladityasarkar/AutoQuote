@@ -77,7 +77,6 @@ def dfmaker(path):
                     images = images_xlsx(img_sheet, header_row, img_col)
                     df[col] = images #list(map(lambda x: x.decode(), images))
             sheets.append(df)
-
     return sheets, names
     
 if __name__ == "__main__":
