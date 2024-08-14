@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>View Inventory</title>
+  <style >
+    /* Style the body */
+body {
+  background-color:#c2ae99;
+  font-family: Arial, sans-serif;
+  margin: 20;
+  padding: 30;
+  align-items: center;
+  height: 100vh; /* Center content vertically in the viewport */
+}
+
+/* Style the headings (H2) */
+h2 {
+  color: #333; /* Text color for H2 */
+  font-size: 1.5em; /* Adjust the font size as needed */
+  text-align: center; /* Center-align the text */
+  margin: 20px 0; /* Add margin for spacing */
+  text-transform: uppercase;
+}
+
+/* Style the table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #0B022D; /* Black border for the table */
+  font-family: Arial, sans-serif;
+  margin: 20px 0;
+}
+th {
+  background-color: #0B022D; /* Dark background color for table headers */
+  color: #fff; /* White text color for table headers */
+  padding: 10px;
+  text-align: center;
+}
+th:hover {
+  background-color: #555; /* Darker background color on hover */
+}
+/* Style the table rows (tr) */
+tr {
+  background-color: #fff;
+  border-bottom: 1px solid #ddd;
+}
+/* Style table rows alternately for better readability */
+tr:nth-child(even) {
+  background-color: #f2f2f2; /* Light gray for even rows */
+}
+/* Style the table cells (td) */
+td {
+  padding: 10px;
+  text-align: center;
+  color: #000;
+}
+
+/* Style the button */
+button {
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+}
+
+/* Style for buttons on hover */
+button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Style the form */
+form {
+  margin: 20px 40px;
+}
+/* Style input and textarea */
+input, textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+  border: 1px solid #000;
+  border-radius: 5px;
+}
+
+/* Style select button */
+select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #000;
+  border-radius: 5px;
+}
+legend {
+  color: #333; /* Text color for the legend */
+  font-size: 1.2em; /* Adjust the font size as needed */
+  font-weight: bold; /* Make the text bold */
+  text-align: center; /* Center-align the text */
+  margin: 10px 0; /* Add margin for spacing */
+  position: relative; /* Set the position to relative */
+  z-index: 1; /* Increase the z-index to bring it to the front */
+}
+header {
+    
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.logo img {
+    height: 50px;
+}
+
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+nav li {
+    margin-right: 20px;
+    align-self: center;
+}
+
+nav a {
+    text-decoration: none;
+    background-color:#c2ae99;
+    color: #ffffff;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+nav a:hover {
+    color: #0B022D;
+}
+.container {
+    max-width: auto;
+    background-color:#c2ae99;    
+    display: flex;
+    align-items: center;
+}
+
+.containers{
+    background-color: transparent;
+}
+</style>
+</head>
+<body>
+  <header>
+    <div class="container">
+        <nav>
+            <ul>
+                <li>
+                    <div class="logo">
+                        <a href="/"><img src="/static/images/logo.png" alt="AutoQuote"></a>
+                     </div>
+                 </li>
+                <li><a href="/add_inventory">Add Products</a></li>
+                <li><a href="/view_inventory">View Products</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+  <table>
+    <tr>
+      <th>Model No.</th>
+      <th>Category</th>
+      <th>Brand</th>
+      <th>Product Name</th>
+      <th>Specifications</th>
+      <th>Remarks</th>
+      <th>Price</th>
+      <th>Hotel</th>
+      <th>Image</th>
+    </tr>
+    {% for book in books %}
+      <tr>
+        <td><a href="/edit_inventory/{{ book.model}}">{{ book.model }}</td>
+        <td>{{ book.category }}</td>
+        <td>{{ book.brand }}</td>
+        <td>{{ book.product }}</td>
+        <td>{{ book.specifications }}</td>
+        <td>{{ book.remarks }}</td>
+        <td>{{ book.price }}</td>
+        <td>{{ book.hotel }}</td>
+        <td>
+          <img src="data:image/png;base64,{{ book.image }}" alt="Product Image" style="max-width: 100px; max-height: 100px;"/>
+        </td>      
+      </tr>
+      {% endfor %}
+  </table>
+</body>
+</html>
