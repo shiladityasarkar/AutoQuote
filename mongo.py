@@ -21,7 +21,6 @@ try:
 except Exception as e:
     print(e)
 
-
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
 targets = ['category', 'brand', 'product', 'model', 'specifications', 'GST', 'HSN', 'remarks', 'price', 'hotel', 'image']
@@ -83,7 +82,8 @@ while True:
     db = client['sampleInventory']
     collection = db['inventory']
     dick = sheets[c].to_dict('records')
-    ch = input('Do you want to insert this data? (y/n) ')
+    # ch = input('Do you want to insert this data? (y/n) ')
+    ch = 'y'
     if ch == 'y' or ch == 'Y':
         collection.insert_many(dick)
         print('Data inserted successfully!')
