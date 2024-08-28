@@ -1,10 +1,12 @@
+from math import floor
+import pathlib
 import re
+import tempfile
 import warnings
 import base64
 import io
+from tqdm.auto import tqdm
 from PIL import Image
-import os
-import tempfile
 from dotenv import load_dotenv
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 import pandas as pd
@@ -22,23 +24,25 @@ warnings.filterwarnings('ignore')
 load_dotenv()
 
 def create_vectordb(file, update=False):
+    print("Reading data from mongoDB...")
     quote = read_mongo(db='sampleInventory', collection='inventory')
     # User sheets
-    sheets, sheet_names = df_maker(r"S:\AutoQuote\data\ROOM LIST  1 - WITHOUT QUOTE.xls")
+    sheets, sheet_names = df_maker(file)
     print(sheets)
     
     # To be executed only when the inventory is updated
     if update:
+        print("Creating embeddings...")
         quote[['_id', 'product', 'specifications']].to_csv('mongo_data.csv')
 
         # Indexing
-        loader = CSVLoader("S:\AutoQuote\mongo_data.csv", encoding='latin1')
+        loader = CSVLoader(r"C:\Users\purus\Documents\GitHub\AutoQuote\mongo_data.csv", encoding='latin1')
         documents = loader.load()
         
         # Emptying the index
         pc = Pinecone()
-        pc.Index("autoquote").delete(delete_all=True,
-                                     namespace="")
+        # pc.Index("autoquote").delete(delete_all=True,
+        #                              namespace="")
 
         # Storing all the vectors
         vectorstore = PineconeVectorStore.from_documents(documents=documents,
@@ -57,18 +61,20 @@ def get_column_index(columns, names):
             return columns.index(name)
     return None
 
+# Function to decode the images
 def decode_base64(base64_string):
     image_data = base64.b64decode(base64_string)
     image = Image.open(io.BytesIO(image_data))
     return image
 
-def main(file, gst, hsn):
+def main(file, gst, hsn, options, price_range):
     file = "S:/AutoQuote/data/" + file
     print(file)
-    vectorstore, sheets, sheet_names, quote = create_vectordb(file)
+    vectorstore, sheets, sheet_names, quote = create_vectordb(file, update=True)
 
     # Retrieve and Generate
-    llm = ChatGroq(temperature=0)
+    llm = ChatGroq(temperature=0,
+                   api_key='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')
     retriever = vectorstore.as_retriever()
 
     prompt = hub.pull("rlm/rag-prompt")
@@ -80,7 +86,7 @@ def main(file, gst, hsn):
         | StrOutputParser()
     )
 
-    col_list = ["_id", "product", "image", "brand", "model", "specifications", "price", "remarks"]
+    col_list = ["_id", "product", "image", "brand", "model", "specifications", "price", "total price", "remarks"]
     if gst == 'yes':
         col_list.append("GST")
     if hsn == 'yes':
@@ -97,42 +103,81 @@ def main(file, gst, hsn):
         item_idx = get_column_index(cols, ['item', 'product'])
         
         # Iterating over the rows
-        for row in sheet.iterrows():
+        progress_bar = tqdm(sheet.iterrows(), desc=f"Sheet: {name}")
+        for row in progress_bar:
             product_name = row[1][item_idx]
             quantity = row[1][quantity_idx]
             
             # Retrieve the data from 'quote'
             output = rag_chain.invoke(f"Retrieve the <_id> of the products closest to the following description: {product_name}. Do not look only for an exact match, a closely related match will work just as well. If there are no close matches, simply return <None>.")
             _ids = re.findall(r'\b[0-9][a-z0-9]{22}[a-z0-9]\b', output)
-            
+            row = pd.DataFrame([[None] * 11], columns=["_id", "product", "image", "brand", "model", "specifications", "price", "GST", "total price", "HSN", "remarks"])
             if _ids == []:
-                row = pd.DataFrame([[None] * 10], columns=["_id", "product", "image", "brand", "model", "specifications", "price", "HSN", "GST", "remarks"])
+                none = pd.DataFrame([[None] * 11], columns=["_id", "product", "image", "brand", "model", "specifications", "price", "GST", "total price", "HSN", "remarks"])
+                row = pd.concat([none, row], join='inner')
             else:
-                row = quote[quote['_id'].astype(str) == _ids[0]]
-            final_df = pd.concat([final_df, row], join='inner')
-    
+                # Looping over all the matching items
+                for id_idx in range(len(_ids)):
+                    row = pd.concat([row, quote[quote['_id'].astype(str) == _ids[id_idx]]], join='inner')
+                # Sorting on the basis of price
+                row.sort_values('price', inplace=True)
+                # Check for price ranges and see if options are enabled
+                range_size = floor(row.shape[0] / 3)
+                print(range_size)
+                if range_size < 1:
+                    if price_range[0] == 'yes':
+                        row = row.iloc[:range_size]
+                    elif price_range[1] == 'yes':
+                        row = row.iloc[range_size:range_size * 2]
+                    elif price_range[2] == 'yes':
+                        row = row.iloc[range_size * 2: range_size * 3]
+                print(" Row updated!")
+                try:
+                    row["total price"] = quantity * int(row['price']) * (float(row['GST']) + 1)
+                except:
+                    pass
+            final_df = pd.concat([final_df, row.iloc[1:]], join='inner')
+
         final_df.to_excel(writer,
                           sheet_name=name,
                           index=False)
-        
-        # Inserting images into the Excel file
+        print(f"Sheet: {name} created!")
+
+        # Formatting the sheet
+        workbook  = writer.book
         worksheet = writer.sheets[name]
-        for idx, row in final_df.iterrows():
-            if pd.notna(row['image']):
-                image = decode_base64(row['image'])
-                
+        empty_row = workbook.add_format({
+                'fg_color': 'red',
+                'border': 1
+            })
+        header_row = workbook.add_format({
+                'fg_color': 'black',
+                'font_color': 'white',
+                'bold': True
+            })
+        for col_num, value in enumerate(final_df.columns.values):
+            worksheet.write(0, col_num, value, header_row)
+            
+        # Inserting images into the Excel file
+        for idx, row in enumerate(final_df.iterrows()):
+            worksheet.set_row(idx + 1, 50)
+            worksheet.set_column(idx + 1, 50)
+            try:
+                image = decode_base64(row[1]['image'])
                 with tempfile.NamedTemporaryFile(delete=False, suffix='.png') as tmp_file:
                     image.save(tmp_file.name)
                     tmp_file_path = tmp_file.name
-
-                    # Inserting the image using xlsxwriter
-                worksheet.insert_image(f'C{idx + 2}', tmp_file_path)
-                
-                # Removing the temporary image files
-                # os.remove(tmp_file_path)
+                # Inserting the image using xlsxwriter
+                worksheet.embed_image(f'C{idx + 2}', tmp_file_path)
+            except Exception as e:
+                if row[1]['_id'] == None:
+                    worksheet.set_row(idx + 1, None, empty_row)
+                print(f"{idx}: {e}")
+            worksheet.autofit()
 
     # Saving the file
     writer.close()
+    return pathlib.Path(__file__).parent.resolve().__str__() + "\quoted_boq.xlsx"
 
-if __name__ == "__main__":
-    main('abc', 'yes', 'no')
+# if __name__ == "__main__":
+#     main('abc', 'yes', 'no')

@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import pandas as pd
 import openpyxl
 from pathlib import Path
+import pythoncom
 import win32com.client
 from io import BytesIO
 from openpyxl_image_loader import SheetImageLoader
@@ -10,17 +11,22 @@ from openpyxl_image_loader import SheetImageLoader
 load_dotenv()
 
 def convert_xls_to_xlsx(path):
+    pythoncom.CoInitialize()
     excel = win32com.client.Dispatch('Excel.Application')
+    excel.Interactive = False
     excel.Visible = False
+    excel.DisplayAlerts = False
     try:
         wb = excel.Workbooks.Open(path)
-        xlsx_path = path[:-4] + ".xlsx"
+        xlsx_path = '\\'.join(path.split('/')[:-1]) + "\\temp.xlsx"
+        print(xlsx_path)
         wb.SaveAs(xlsx_path, FileFormat=51) # 51 is the file format for xlsx
         wb.Close()
     except Exception as e:
-        raise RuntimeError("An error occurred while converting the file.")
+        raise RuntimeError(f"An error occurred while converting the file: {str(e)}")
     finally:
         excel.Quit()
+        pythoncom.CoUninitialize()
     return xlsx_path
 
 def images_xlsx(sheet, header_row, img_col):
@@ -37,16 +43,18 @@ def images_xlsx(sheet, header_row, img_col):
                 images.append(None)
     return images
 
-def dfmaker(path):
+def df_maker(path):
     excel_obj = pd.ExcelFile(path)
     sheets = []
     names = []
+
     # Checking if a .xlsx file already exists
     file_check = Path(path[:-4] + ".xlsx")
     if not file_check.is_file():
-        convert_xls_to_xlsx(path)
-        
-    path = path[:-4] + ".xlsx"
+        print("Converting file to .xlsx format...")
+        path = convert_xls_to_xlsx(path)
+    else:
+        path = path[:-4] + ".xlsx"
 
     for sheet in excel_obj.book:
         # Getting the index of header row
@@ -79,8 +87,8 @@ def dfmaker(path):
             sheets.append(df)
     return sheets, names
     
-if __name__ == "__main__":
-    path = r"S:\AutoQuote\data\WALTHR PRICE LIST.xls"
-    df = df_maker(path)
-    df[0].to_excel('multiple_images.xlsx')
-    print("File saved!")
+# if __name__ == "__main__":
+#     path = r"S:\AutoQuote\data\WALTHR PRICE LIST.xls"
+#     df = df_maker(path)
+#     df[0].to_excel('multiple_images.xlsx')
+#     print("File saved!")

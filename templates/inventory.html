@@ -150,19 +150,22 @@
 </head>
   <body>
     <header>
-      <div class="container">
-          <nav>
-              <ul>
-                  <li>
-                      <div class="logo">
-                          <a href="/"><img src="/static/images/logo.png" alt="AutoQuote"></a>
-                       </div>
-                   </li>
-                  <li><a href="/add_inventory">Add Products</a></li>
-                  <li><a href="/view_inventory">View Products</a></li>
-              </ul>
-          </nav>
-      </div>
+        <div class="container">
+            <nav>
+                <ul>
+                    <li>
+                        <div class="logo">
+                            <a href="/"><img src="/static/images/logo.png" alt="AutoQuote"></a>
+                         </div>
+                     </li>
+                     <!-- <li><a href="/add_discount">Add Discount</a></li> -->
+                    <li><a href="/add_inventory">Add Product</a></li>
+                    <li><a href="/bulk_inventory">Bulk Add Product</a></li>
+                    <!-- <li><a href="/BOQ_history">BOQ History</a></li> -->
+                    <li><a href="/view_inventory">View Products</a></li>
+                </ul>
+            </nav>
+        </div>
     </header>
     <center>
         <div id="inventoryform">
@@ -170,12 +173,13 @@
             <form id="productForm">
                 <input type="text" class="input" name="category" placeholder="Enter Category"><br><br>
                 <input type="text" class="input" name="brand" placeholder="Enter Brand name"><br><br>
-                <input type="text" class="input" name="name" placeholder="Enter Product Name"><br><br>
+                <input type="text" class="input" name="product" placeholder="Enter Product Name"><br><br>
                 <input type="text" class="input" name="model" placeholder="Enter Model Number"><br><br>
                 <textarea name="specifications" rows="4" cols="50" placeholder="Enter Specifications"></textarea><br><br>
                 <textarea name="remarks" rows="4" cols="50" placeholder="Enter Remarks"></textarea><br><br>
                 <input type="number" class="input" name="price" placeholder="Enter Price"><br><br>
-                <input type="text" class="input" name="hotel" placeholder="Enter Hotel Preference"><br><br>
+                <input type="number" class="input" name="GST" placeholder="Enter GST value"><br><br>
+                <input type="number" class="input" name="HSN" placeholder="Enter HSN code"><br><br>
                 <input type="file" id="myFile" name="filename"><br><br>
                 <textarea name="image" rows="4" cols="50" id="base64Data" hidden></textarea><br><br>
                 <button type="button" id="submit1" class="button">Save</button>

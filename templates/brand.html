@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Discount</title>
+</head>
+<body>
+<form id="discountform">
+	{% for book in books %}
+	<h4>{{book}}</h4><input type="number" name="{{book}}">
+	{% endfor %}
+	<button type="button" id="submit1" class="button">Apply</button>
+</form>
+<script>
+	document.getElementById('submit1').addEventListener('click', function() {
+            const isConfirm = window.confirm("Do you want to save it?");
+            if (isConfirm) {
+                const form = $("#discountform").serializeArray();
+                $.ajax({
+                    type: "POST",
+                    url: "/view_brands",
+                    data: form,
+                    xhrFields: {
+                        withCredentials: true
+                    },
+                    crossDomain: true,
+                    success: function(msg) {
+                        alert("Data saved successfully!");
+                        window.location.href = '/';
+                    },
+                    error: function(xhr) {
+                        alert("Error saving data.");
+                    }
+                });
+            }
+        });
+</script>
+</body>
+</html>

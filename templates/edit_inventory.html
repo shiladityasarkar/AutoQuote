@@ -6,116 +6,146 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Edit Product</title>
-  <style >
-    /* Style the body */
-body {
-  background-color:#bae5d8;
-  font-family: Arial, sans-serif;
-  margin: 20;
-  padding: 30;
-  align-items: center;
-  height: 100vh; /* Center content vertically in the viewport */
-}
+ <style >
+    body {
+      background-color:#c2ae99;
+      font-family: Arial, sans-serif;
+      margin: 20;
+      padding: 30;
+      align-items: center;
+      height: 100vh;
+    }
 
-/* Style the headings (h4) */
-h4 {
-  color: #333; /* Text color for h4 */
-  font-size: 1em; /* Adjust the font size as needed */
-  text-align: center; /* Center-align the text */
-  margin: 20px 0; /* Add margin for spacing */
-  text-transform: uppercase;
-}
+    h2 {
+      color: #333;
+      font-size: 1.5em;
+      text-align: center;
+      margin: 20px 0;
+      text-transform: uppercase;
+    }
 
-/* Style the table */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  border: 1px solid #000; /* Black border for the table */
-  font-family: Arial, sans-serif;
-  margin: 20px 0;
-}
-th {
-  background-color: #333; /* Dark background color for table headers */
-  color: #fff; /* White text color for table headers */
-  padding: 10px;
-  text-align: center;
-}
-th:hover {
-  background-color: #555; /* Darker background color on hover */
-}
-/* Style the table rows (tr) */
-tr {
-  background-color: #fff;
-  border-bottom: 1px solid #ddd;
-}
-/* Style table rows alternately for better readability */
-tr:nth-child(even) {
-  background-color: #f2f2f2; /* Light gray for even rows */
-}
-/* Style the table cells (td) */
-td {
-  padding: 10px;
-  text-align: center;
-  color: #000;
-}
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1px solid #000; 
+      font-family: Arial, sans-serif;
+      margin: 20px 0;
+    }
+    th {
+      background-color: #333;
+      color: #fff;
+      padding: 10px;
+      text-align: center;
+    }
+    th:hover {
+      background-color: #555;
+    }
 
-/* Style the button */
-button {
-  background-color: #007bff;
-  color: #fff;
-  padding: 10px 20px;
-  border: none;
-  cursor: pointer;
-}
+    tr {
+      background-color: #fff;
+      border-bottom: 1px solid #ddd;
+    }
 
-/* Style for buttons on hover */
-button:hover {
-  background-color: #0056b3; /* Darker blue on hover */
-}
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
 
-/* Style the form */
-form {
-  margin: 20px 40px;
-}
+    td {
+      padding: 10px;
+      text-align: center;
+      color: #000;
+    }
 
-/* Style the div tag */
-div {
-  background-color: #ffffff;
-  margin: 20px;
-  padding: 30px;
-  border: 1px solid #000;
-}
+    button {
+      background-color: #0B022D;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+    }
 
-/* Style input and textarea */
-input, textarea {
-  width: 100%;
-  padding: 10px;
-  margin: 5px 0;
-  border: 1px solid #000;
-  border-radius: 5px;
-}
+    button:hover {
+      background-color: #c2ae99;
+      color: #000;
+    }
 
-/* Style select button */
-select {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #000;
-  border-radius: 5px;
-}
-legend {
-  color: #333; /* Text color for the legend */
-  font-size: 1.2em; /* Adjust the font size as needed */
-  font-weight: bold; /* Make the text bold */
-  text-align: center; /* Center-align the text */
-  margin: 10px 0; /* Add margin for spacing */
-  position: relative; /* Set the position to relative */
-  z-index: 1; /* Increase the z-index to bring it to the front */
-}
+    form {
+      margin: 20px 40px;
+    }
 
+    #inventoryform {
+      background-color: #ffffff;
+      margin: 20px;
+      padding: 30px;
+      border: 1px solid #000;
+    }
 
-/* You can add more specific styles as needed */
+    /* Style input and textarea */
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0;
+      border: 1px solid #000;
+      border-radius: 5px;
+    }
 
+    /* Style select button */
+    select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #000;
+      border-radius: 5px;
+    }
+    legend {
+      color: #333; /* Text color for the legend */
+      font-size: 1.2em; /* Adjust the font size as needed */
+      font-weight: bold; /* Make the text bold */
+      text-align: center; /* Center-align the text */
+      margin: 10px 0; /* Add margin for spacing */
+      position: relative; /* Set the position to relative */
+      z-index: 1; /* Increase the z-index to bring it to the front */
+    }
+    header {
+        
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .logo img {
+        height: 50px;
+    }
 
+    nav ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+    }
+
+    nav li {
+        margin-right: 20px;
+        align-self: center;
+    }
+
+    nav a {
+        text-decoration: none;
+        background-color:#c2ae99;
+        color: #ffffff;
+        font-weight: bold;
+        transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+        color: #0B022D;
+    }
+    .container {
+        max-width: auto;
+        background-color:#c2ae99;    
+        display: flex;
+        align-items: center;
+    }
+
+    .containers{
+        background-color: transparent;
+    }
   </style>
 </head>
 <body>
@@ -133,15 +163,18 @@ legend {
     <h4>Brand</h4>
       <input type="text" name="brand"  value="{{mybooks.brand}}"><br>
     <h4>Name</h4>
-      <input type="text"  name="name"  value="{{mybooks.name}}"><br>
+      <input type="text"  name="name"  value="{{mybooks.product}}"><br>
     <h4>Specifications</h4>
       <textarea name="specifications" rows="4" cols="50">{{mybooks.specifications}}</textarea><br><br>
     <h4>Remarks</h4>
       <textarea name="remarks" rows="4" cols="50">{{mybooks.remarks}}</textarea><br><br>
     <h4>Price</h4>
       <input type="number" name="price"   value="{{mybooks.price}}"><br>
-    <h4>Hotels</h4>
-      <input type="text" name="hotel"   value="{{mybooks.hotel}}"><br>
+    <h4>GST</h4>
+      <input type="number" name="GST"   value="{{mybooks.GST}}"><br>
+    <br>
+    <h4>HSN</h4>
+      <input type="number" name="HSN"   value="{{mybooks.HSN}}"><br>
     <br>
     <h4>Image</h4>
       <img src="data:image/jpeg;base64,{{ mybooks.image }}" alt="Product Image" style="max-width: 100px; max-height: 100px;"/><br>
@@ -177,7 +210,7 @@ legend {
     var modelName = $("#model").val();
     $.ajax({
                         type: "POST",
-                        url: "http://localhost:5001/edit_inventory/" + modelName,
+                        url: "/edit_inventory/" + modelName,
                         data: form,
                         xhrFields: {
                   withCredentials: true

@@ -17,16 +17,20 @@
                             <a href="/"><img src="/static/images/logo.png" alt="AutoQuote"></a>
                          </div>
                      </li>
-                    <li><a href="/add_inventory">Add Products</a></li>
+                     <!-- <li><a href="/add_discount">Add Discount</a></li> -->
+                    <li><a href="/add_inventory">Add Product</a></li>
+                    <li><a href="/bulk_inventory">Bulk Add Product</a></li>
+                    <!-- <li><a href="/BOQ_history">BOQ History</a></li> -->
                     <li><a href="/view_inventory">View Products</a></li>
                 </ul>
             </nav>
         </div>
     </header>
     <main>
-        <center>
           <div class="hero">
 			<h3>Generate Quotation!</h3>
+            Hotel Name:
+            <input type="text" name="hotel" placeholder="Enter the Hotel Name" class="inputtext"><br>
 			<input type="file" id="fileInput"><br><br>
 			With GST: 
 			<input type="radio" name="gst" value="yes" id="gstYes">Yes 
@@ -34,9 +38,24 @@
 			With HSN: 
 			<input type="radio" name="hsn" value="yes" id="hsnYes">Yes 
 			<input type="radio" name="hsn" value="no" id="hsnNo">No<br><br>
+            Choose price range: 
+            <input type="checkbox" name="reasonable" value="reasonable">
+            <label for="reasonable">Reasonable</label>
+            <input type="checkbox" name="moderate" value="moderate">
+            <label for="moderate">Moderate</label>
+            <input type="checkbox" name="luxury" value="luxury">
+            <label for="luxury">Luxury</label><br><br>
+            Enable Options: 
+			<input type="radio" name="options" value="yes" id="optionsYes">Yes 
+			<input type="radio" name="options" value="no" id="optionsNo">No<br><br>
 			<button class="btn" id="generateButton">Generate</button>
+            <p id="wait_str" visiblity="False">
+                <b>
+                    Your quotation is being generated...
+                    Feel free to browse through other tabs, the generated BOQ will be automatically downloaded!
+                </b>
+            </p>
         </div>
-        </center>
     </main>
     <footer>
         <div>

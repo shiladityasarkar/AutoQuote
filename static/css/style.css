@@ -112,3 +112,10 @@ footer {
     position: fixed;
     width: 100%;
 }
+.inputtext{
+    width: 10%;
+    padding: 5px;
+    margin: 5px 0;
+    border: 1px solid #000;
+    border-radius: 5px;
+}
