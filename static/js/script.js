@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         // Get the options value
-        const optionsValue = document.querySelector('input[name="options"]:checked').value;
+        // const optionsValue = document.querySelector('input[name="options"]:checked').value;
 
         // Create formData and append values
         const formData = new FormData();
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
         formData.append('gst', gstValue);
         formData.append('hsn', hsnValue);
         formData.append('priceRanges', JSON.stringify(priceRanges)); // sending as JSON string
-        formData.append('options', optionsValue);
+        // formData.append('options', optionsValue);
 
         fetch('/generate', {
             method: 'POST',

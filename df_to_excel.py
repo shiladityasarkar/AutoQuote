@@ -41,8 +41,8 @@ def create_vectordb(file, update=False):
         
         # Emptying the index
         pc = Pinecone()
-        # pc.Index("autoquote").delete(delete_all=True,
-        #                              namespace="")
+        pc.Index("autoquote").delete(delete_all=True,
+                                     namespace="")
 
         # Storing all the vectors
         vectorstore = PineconeVectorStore.from_documents(documents=documents,
@@ -112,19 +112,19 @@ def main(file, gst, hsn, options, price_range):
             output = rag_chain.invoke(f"Retrieve the <_id> of the products closest to the following description: {product_name}. Do not look only for an exact match, a closely related match will work just as well. If there are no close matches, simply return <None>.")
             _ids = re.findall(r'\b[0-9][a-z0-9]{22}[a-z0-9]\b', output)
             row = pd.DataFrame([[None] * 11], columns=["_id", "product", "image", "brand", "model", "specifications", "price", "GST", "total price", "HSN", "remarks"])
-            if _ids == []:
+            if len(_ids) == 0:
                 none = pd.DataFrame([[None] * 11], columns=["_id", "product", "image", "brand", "model", "specifications", "price", "GST", "total price", "HSN", "remarks"])
                 row = pd.concat([none, row], join='inner')
             else:
                 # Looping over all the matching items
                 for id_idx in range(len(_ids)):
-                    row = pd.concat([row, quote[quote['_id'].astype(str) == _ids[id_idx]]], join='inner')
+                    row = pd.concat([quote[quote['_id'].astype(str) == _ids[id_idx]], row], join='inner')
                 # Sorting on the basis of price
+                row = row[row['_id'].notna()]
                 row.sort_values('price', inplace=True)
                 # Check for price ranges and see if options are enabled
                 range_size = floor(row.shape[0] / 3)
-                print(range_size)
-                if range_size < 1:
+                if range_size >= 1:
                     if price_range[0] == 'yes':
                         row = row.iloc[:range_size]
                     elif price_range[1] == 'yes':
@@ -133,10 +133,11 @@ def main(file, gst, hsn, options, price_range):
                         row = row.iloc[range_size * 2: range_size * 3]
                 print(" Row updated!")
                 try:
-                    row["total price"] = quantity * int(row['price']) * (float(row['GST']) + 1)
+                    row["total price"] = quantity * (row['price'].astype(float)) * ((row['GST'].astype(float)) + 1)
                 except:
-                    pass
-            final_df = pd.concat([final_df, row.iloc[1:]], join='inner')
+                    print('error in total price')
+            final_df = pd.concat([final_df, row], join='inner')
+            print(final_df)
 
         final_df.to_excel(writer,
                           sheet_name=name,
