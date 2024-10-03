@@ -1,4 +1,6 @@
 import os
+
+import pandas as pd
 from df_to_excel import main
 from flask import Flask, redirect, request, render_template, jsonify, url_for
 from flask_cors import CORS, cross_origin
@@ -62,6 +64,23 @@ def bulk_add():
 def add_discount():
     return render_template('discount.html')
 
+@app.route('/get_column', methods=['POST'])
+@cross_origin(support_credentials=True)
+def get_column():
+    file = request.files['file']
+    df = pd.read_excel(file)
+    if 'brand' in df.columns:
+        column_data = list(set(df['brand'].dropna().values))
+    else:
+        return jsonify({'error': 'Brand column not found'}), 400
+    return jsonify({'column_data': column_data})
+
+@app.route('/submit_discounts', methods=['POST'])
+@cross_origin(support_credentials=True)
+def submit_discounts():
+    data = request.form
+    return jsonify({'status': 'success', 'message': 'Discounts submitted successfully!'})
+
 @app.route('/BOQ_history', methods=['GET'])
 @cross_origin(support_credentials=True)
 def add_history():
@@ -122,4 +141,4 @@ def home_page():
     return render_template('homepage.html')
 
 if __name__ == '__main__':
-    app.run(debug=True, threaded=False)
+    app.run(debug=False)

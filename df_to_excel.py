@@ -23,7 +23,7 @@ from langchain_core.output_parsers import StrOutputParser
 warnings.filterwarnings('ignore')
 load_dotenv()
 
-def create_vectordb(file, update=False):
+def create_vectordb(file, update=True):
     print("Reading data from mongoDB...")
     quote = read_mongo(db='sampleInventory', collection='inventory')
     # User sheets
@@ -48,16 +48,15 @@ def create_vectordb(file, update=False):
         vectorstore = PineconeVectorStore.from_documents(documents=documents,
                                                     embedding=GoogleGenerativeAIEmbeddings(model="models/embedding-001"),
                                                     index_name="autoquote")
-    else:
-        vectorstore = PineconeVectorStore(index_name="autoquote",
-                                        embedding=GoogleGenerativeAIEmbeddings(model="models/embedding-001"))
+    vectorstore = PineconeVectorStore(index_name="autoquote",
+                                      embedding=GoogleGenerativeAIEmbeddings(model="models/embedding-001"))
 
     return vectorstore, sheets, sheet_names, quote
 
 # Function to get the column index
 def get_column_index(columns, names):
     for name in names:
-        if name in columns:
+        if name in list(map(lambda x: x.lower(), columns)):
             return columns.index(name)
     return None
 
@@ -100,14 +99,17 @@ def main(file, gst, hsn, options, price_range):
 
         # Getting the index of the quantity and item columns
         quantity_idx = get_column_index(cols, ['qty', 'total qty'])
-        item_idx = get_column_index(cols, ['item', 'product'])
+        item_idx = get_column_index(cols, ['item', 'product', 'description'])
         
         # Iterating over the rows
         previous_format = pd.DataFrame([sheet.iloc[0]])
         progress_bar = tqdm(sheet.iterrows(), desc=f"Sheet: {name}")
         for idx, row in enumerate(progress_bar):
             product_name = row[1][item_idx]
-            quantity = row[1][quantity_idx]
+            if quantity_idx == None:
+                quantity = 1
+            else:
+                quantity = row[1][quantity_idx]
             
             # Retrieve the data from 'quote'
             output = rag_chain.invoke(f"Retrieve the <_id> of the products closest to the following description: {product_name}. Do not look only for an exact match, a closely related match will work just as well. If there are no close matches, simply return <None>.")
@@ -161,6 +163,11 @@ def main(file, gst, hsn, options, price_range):
                 'fg_color': 'red',
                 'border': 1
             })
+        # TO BE ADDED
+        no_qty_row = workbook.add_format({
+            'fg_color': 'yellow',
+            'border': 1
+        })
         header_row = workbook.add_format({
                 'fg_color': 'black',
                 'font_color': 'white',
@@ -179,7 +186,7 @@ def main(file, gst, hsn, options, price_range):
                     image.save(tmp_file.name)
                     tmp_file_path = tmp_file.name
                 # Inserting the image using xlsxwriter
-                img_col = chr(final_df.shape[1] - 8 + 65)
+                img_col = chr(list(final_df.columns).index('image') + 65)
                 worksheet.embed_image(f'{img_col}{idx + 2}', tmp_file_path)
             except Exception as e:
                 if row[1]['_id'] == None:
