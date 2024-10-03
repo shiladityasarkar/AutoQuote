@@ -68,13 +68,13 @@ def decode_base64(base64_string):
     return image
 
 def main(file, gst, hsn, options, price_range):
-    file = "S:/AutoQuote/data/" + file
+    file = "C:/Users/purus/Documents/GitHub/AutoQuote/data/" + file
     print(file)
-    vectorstore, sheets, sheet_names, quote = create_vectordb(file, update=True)
+    vectorstore, sheets, sheet_names, quote = create_vectordb(file, update=False)
 
     # Retrieve and Generate
     llm = ChatGroq(temperature=0,
-                   api_key='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')
+                   api_key='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')
     retriever = vectorstore.as_retriever()
 
     prompt = hub.pull("rlm/rag-prompt")
@@ -103,8 +103,9 @@ def main(file, gst, hsn, options, price_range):
         item_idx = get_column_index(cols, ['item', 'product'])
         
         # Iterating over the rows
+        previous_format = pd.DataFrame([sheet.iloc[0]])
         progress_bar = tqdm(sheet.iterrows(), desc=f"Sheet: {name}")
-        for row in progress_bar:
+        for idx, row in enumerate(progress_bar):
             product_name = row[1][item_idx]
             quantity = row[1][quantity_idx]
             
@@ -112,12 +113,17 @@ def main(file, gst, hsn, options, price_range):
             output = rag_chain.invoke(f"Retrieve the <_id> of the products closest to the following description: {product_name}. Do not look only for an exact match, a closely related match will work just as well. If there are no close matches, simply return <None>.")
             _ids = re.findall(r'\b[0-9][a-z0-9]{22}[a-z0-9]\b', output)
             row = pd.DataFrame([[None] * 11], columns=["_id", "product", "image", "brand", "model", "specifications", "price", "GST", "total price", "HSN", "remarks"])
+            print(_ids)
             if len(_ids) == 0:
-                none = pd.DataFrame([[None] * 11], columns=["_id", "product", "image", "brand", "model", "specifications", "price", "GST", "total price", "HSN", "remarks"])
-                row = pd.concat([none, row], join='inner')
+                previous_format = pd.concat([previous_format, pd.DataFrame([sheet.iloc[idx]])], join='inner')
+                previous_format.reset_index(inplace=True, drop=True)
             else:
                 # Looping over all the matching items
                 for id_idx in range(len(_ids)):
+                    # Appending to previous format
+                    previous_format = pd.concat([previous_format, pd.DataFrame([sheet.iloc[idx]])], join='inner')
+                    previous_format.reset_index(inplace=True, drop=True)
+                    # Adding the new item
                     row = pd.concat([quote[quote['_id'].astype(str) == _ids[id_idx]], row], join='inner')
                 # Sorting on the basis of price
                 row = row[row['_id'].notna()]
@@ -138,7 +144,11 @@ def main(file, gst, hsn, options, price_range):
                     print('error in total price')
             final_df = pd.concat([final_df, row], join='inner')
             print(final_df)
-
+        # Removing the duplicate indices
+        previous_format.drop([0], inplace=True)
+        previous_format.reset_index(inplace=True, drop=True)
+        final_df.reset_index(inplace=True, drop=True)
+        final_df = pd.concat([previous_format, final_df], axis=1)
         final_df.to_excel(writer,
                           sheet_name=name,
                           index=False)
@@ -169,7 +179,8 @@ def main(file, gst, hsn, options, price_range):
                     image.save(tmp_file.name)
                     tmp_file_path = tmp_file.name
                 # Inserting the image using xlsxwriter
-                worksheet.embed_image(f'C{idx + 2}', tmp_file_path)
+                img_col = chr(final_df.shape[1] - 8 + 65)
+                worksheet.embed_image(f'{img_col}{idx + 2}', tmp_file_path)
             except Exception as e:
                 if row[1]['_id'] == None:
                     worksheet.set_row(idx + 1, None, empty_row)

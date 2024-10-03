@@ -71,7 +71,9 @@ def add_history():
 @cross_origin(support_credentials=True)
 def view_data():
     collection = db['inventory']
-    books = collection.find().limit(10)
+    books = list(collection.find().limit(10))
+    for book in books:
+        book['image'] = str(book['image'])[2:-1]
     return render_template('inventoryview.html', books=books)
 
 @app.route('/edit_inventory/<model>', methods=['POST', 'GET'])
