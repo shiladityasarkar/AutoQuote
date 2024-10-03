@@ -5,6 +5,7 @@ import tempfile
 import warnings
 import base64
 import io
+from openpyxl import load_workbook
 from tqdm.auto import tqdm
 from PIL import Image
 from dotenv import load_dotenv
@@ -66,6 +67,36 @@ def decode_base64(base64_string):
     image = Image.open(io.BytesIO(image_data))
     return image
 
+def create_summary(path, saveloc):
+    sheets, names = df_maker(path)
+    rows = []
+
+    for i, df in enumerate(sheets):
+        df.rename(columns=str.lower, inplace=True)
+        summ = sum(df['total price'].dropna())
+        d = df['total price'].dropna()*df['gst'].dropna()
+        d.dropna(inplace=True)
+        gst = sum(d)
+        row = {'Category': names[i], 'Amount': summ, 'GST value': gst}
+        rows.append(row)
+
+    dfs = pd.DataFrame(rows)
+    template_path = r"C:\Users\purus\Documents\GitHub\AutoQuote\data\template.xlsx"
+    workbook = load_workbook(template_path)
+    sheet = workbook.active
+
+    if len(dfs)>5:
+        for _ in range(len(dfs)-5):
+            sheet.insert_rows(21)
+
+    for index, row in dfs.iterrows():
+        sheet.cell(row=index + 16, column=1, value=index+1)
+        sheet.cell(row=index + 16, column=2, value=row['Category'])
+        sheet.cell(row=index + 16, column=3, value=row['Amount'])
+        sheet.cell(row=index + 16, column=4, value=row['GST value'])
+    workbook.save(saveloc)
+    print("Generated Summary!")
+
 def main(file, gst, hsn, options, price_range):
     file = "C:/Users/purus/Documents/GitHub/AutoQuote/data/" + file
     print(file)
@@ -99,7 +130,7 @@ def main(file, gst, hsn, options, price_range):
 
         # Getting the index of the quantity and item columns
         quantity_idx = get_column_index(cols, ['qty', 'total qty'])
-        item_idx = get_column_index(cols, ['item', 'product', 'description'])
+        item_idx = get_column_index(cols, ['item', 'product'])
         
         # Iterating over the rows
         previous_format = pd.DataFrame([sheet.iloc[0]])
@@ -196,7 +227,11 @@ def main(file, gst, hsn, options, price_range):
 
     # Saving the file
     writer.close()
-    return pathlib.Path(__file__).parent.resolve().__str__() + "\quoted_boq.xlsx"
+
+    # Generating the summary
+    quote_path = pathlib.Path(__file__).parent.resolve().__str__() + "\quoted_boq.xlsx"
+    create_summary(quote_path, r"C:\Users\purus\Downloads\generated_sum.xlsx")
+    return quote_path
 
 # if __name__ == "__main__":
 #     main('abc', 'yes', 'no')
