@@ -100,7 +100,7 @@ def create_summary(path, saveloc):
 def main(file, gst, hsn, options, price_range):
     file = "C:/Users/purus/Documents/GitHub/AutoQuote/data/" + file
     print(file)
-    vectorstore, sheets, sheet_names, quote = create_vectordb(file, update=False)
+    vectorstore, sheets, sheet_names, quote = create_vectordb(file, update=True)
 
     # Retrieve and Generate
     llm = ChatGroq(temperature=0,
